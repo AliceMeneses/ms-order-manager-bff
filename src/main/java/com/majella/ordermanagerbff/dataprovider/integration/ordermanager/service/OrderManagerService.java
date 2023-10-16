@@ -3,10 +3,8 @@ package com.majella.ordermanagerbff.dataprovider.integration.ordermanager.servic
 import com.majella.ordermanagerbff.core.gateway.OrderManagerGateway;
 import com.majella.ordermanagerbff.dataprovider.integration.ordermanager.client.OrderManagerClient;
 import com.majella.ordermanagerbff.entrypoint.api.controller.payload.request.OrderRequest;
-import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.MenuPlateResponse;
 import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.OrderResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +14,6 @@ import java.util.List;
 public class OrderManagerService implements OrderManagerGateway {
 
     private final OrderManagerClient orderManagerClient;
-
-    @Override
-    public List<MenuPlateResponse> getMenu(Pageable pageable) {
-        return orderManagerClient.getMenu(pageable);
-    }
 
     @Override
     public OrderResponse create(OrderRequest orderRequest) {

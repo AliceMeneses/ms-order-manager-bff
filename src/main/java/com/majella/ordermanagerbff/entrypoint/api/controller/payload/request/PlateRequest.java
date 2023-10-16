@@ -1,14 +1,12 @@
 package com.majella.ordermanagerbff.entrypoint.api.controller.payload.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class PlateRequest {
 
     private String id;
