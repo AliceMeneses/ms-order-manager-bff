@@ -2,7 +2,8 @@ package com.majella.ordermanagerbff.entrypoint.api.controller;
 
 import com.majella.ordermanagerbff.dataprovider.integration.ordermanager.client.OrderManagerClient;
 import com.majella.ordermanagerbff.entrypoint.api.controller.payload.request.OrderRequest;
-import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.OrderResponse;
+import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.CancelOrderModelResponse;
+import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.OrderModelResponse;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,14 +19,13 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 
+import static com.majella.ordermanagerbff.helper.CancelOrderModelResponseHelper.getCancelOrderModelResponse;
+import static com.majella.ordermanagerbff.helper.OrderModelResponseHelper.getOrderModelResponse;
 import static com.majella.ordermanagerbff.helper.OrderRequestGenerator.getOrderRequest;
-import static com.majella.ordermanagerbff.helper.OrderResponseGenerator.getOrderResponse;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureJsonTesters
@@ -38,7 +38,10 @@ public class OrderManagerControllerApiTest {
     private JacksonTester<OrderRequest> orderRequestJacksonTester;
 
     @Autowired
-    private JacksonTester<OrderResponse> orderResponseJacksonTester;
+    private JacksonTester<OrderModelResponse> orderModelResponseJacksonTester;
+
+    @Autowired
+    private JacksonTester<CancelOrderModelResponse> cancelOrderModelResponseJacksonTester;
 
     @LocalServerPort
     private int port;
@@ -55,13 +58,11 @@ public class OrderManagerControllerApiTest {
     class CreateOrderTest {
 
         @Test
-        @DisplayName("When create order then return order response and status 201")
-        public void whenCreateOrderThenReturnOrderResponseAndStatus201() throws IOException {
+        @DisplayName("When create order then return order model response and status 201")
+        public void whenCreateOrderThenReturnOrderModelResponseAndStatus201() throws IOException {
 
             var orderRequest = getOrderRequest();
-            var orderResponseExpected = getOrderResponse();
-
-            when(orderManagerClient.create(orderRequest)).thenReturn(orderResponseExpected);
+            var expected = getOrderModelResponse();
 
             String result = given()
                     .accept(JSON)
@@ -73,10 +74,10 @@ public class OrderManagerControllerApiTest {
                     .statusCode(HttpStatus.CREATED.value())
                     .extract().asString();
 
-            var orderResult = orderResponseJacksonTester.parse(result).getObject();
+            var orderResult = orderModelResponseJacksonTester.parse(result).getObject();
 
             assertThat(orderResult)
-                    .isEqualTo(orderResponseExpected);
+                    .isEqualTo(expected);
         }
     }
 
@@ -86,17 +87,23 @@ public class OrderManagerControllerApiTest {
 
         @Test
         @DisplayName("When cancel order then cancel order and return status 204")
-        public void whenCancelOrderThenCancelOrderAndReturnStatus204() {
+        public void whenCancelOrderThenCancelOrderAndReturnStatus204() throws IOException {
+            var expected = getCancelOrderModelResponse();
 
-            given()
+            var result = given()
                     .accept(JSON)
                     .pathParam("id", "64fe82fbf968b2939fdd01c7")
                     .basePath("{id}/canceled")
                     .when()
                     .put()
                     .then()
-                    .body(blankOrNullString())
-                    .statusCode(NO_CONTENT.value());
+                    .statusCode(OK.value())
+                    .extract().asString();
+
+            var cancelResult = cancelOrderModelResponseJacksonTester.parse(result).getObject();
+
+            assertThat(cancelResult)
+                    .isEqualTo(expected);
         }
     }
 

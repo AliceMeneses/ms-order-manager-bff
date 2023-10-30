@@ -10,8 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.majella.ordermanagerbff.helper.PageMenuPlateResponseGenerator.getPageMenuPlateResponse;
-import static com.majella.ordermanagerbff.helper.PageableGenerator.getPageable;
+import static com.majella.ordermanagerbff.helper.PlateGenerator.getPlates;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -32,15 +31,13 @@ public class MenuServiceTest {
         @Test
         @DisplayName("When get menu plates then return page menu plates")
         public void whenGetMenuPlatesThenReturnPageMenuPlates() {
-            var pageable = getPageable();
+            var plates = getPlates();
 
-            var pageMenuPlateResponseExpected = getPageMenuPlateResponse();
+            when(orderManagerClient.getPlates()).thenReturn(plates);
 
-            when(orderManagerClient.getMenu(pageable)).thenReturn(pageMenuPlateResponseExpected);
+            var result = menuService.getPlates();
 
-            var result = menuService.getMenu(pageable);
-
-            assertThat(result).isEqualTo(pageMenuPlateResponseExpected);
+            assertThat(result).isEqualTo(plates);
         }
 
     }

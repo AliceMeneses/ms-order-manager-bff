@@ -1,6 +1,7 @@
 package com.majella.ordermanagerbff.entrypoint.api.controller;
 
 import com.majella.ordermanagerbff.core.usecase.OrderManager;
+import com.majella.ordermanagerbff.helper.OrderModelResponseHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.majella.ordermanagerbff.helper.OrderModelResponseHelper.getOrderModelResponse;
 import static com.majella.ordermanagerbff.helper.OrderRequestGenerator.getOrderRequest;
 import static com.majella.ordermanagerbff.helper.OrderResponseGenerator.getOrderResponse;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,13 +35,13 @@ public class OrderManagerControllerTest {
         @DisplayName("when create order then return order response")
         public void whenCreateOrderThenReturnOrderResponse() {
             var orderRequest = getOrderRequest();
-            var orderResponseExpected = getOrderResponse();
-
-            when(orderManager.create(orderRequest)).thenReturn(orderResponseExpected);
+            var orderModelResponseExpected = getOrderModelResponse();
 
             var result = orderManagerController.create(orderRequest);
 
-            assertThat(result).isEqualTo(orderResponseExpected);
+            assertThat(result).isEqualTo(orderModelResponseExpected);
+
+            verify(orderManager).create(orderRequest);
         }
 
     }

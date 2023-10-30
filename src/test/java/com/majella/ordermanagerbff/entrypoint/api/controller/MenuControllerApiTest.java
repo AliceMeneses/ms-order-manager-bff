@@ -1,7 +1,7 @@
 package com.majella.ordermanagerbff.entrypoint.api.controller;
 
 import com.majella.ordermanagerbff.dataprovider.integration.ordermanager.client.OrderManagerClient;
-import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.MenuPlateResponse;
+import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.MenuModelResponse;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 
-import static com.majella.ordermanagerbff.helper.PageMenuPlateResponseGenerator.getPageMenuPlateResponse;
-import static com.majella.ordermanagerbff.helper.PageableGenerator.getPageable;
+import static com.majella.ordermanagerbff.helper.MenuModelResponseGenerator.getMenuModelResponseGenerator;
+import static com.majella.ordermanagerbff.helper.PlateGenerator.getPlates;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +33,7 @@ public class MenuControllerApiTest {
     private OrderManagerClient orderManagerClient;
 
     @Autowired
-    private JacksonTester<Page<MenuPlateResponse>> pageMenuPlateResponseJacksonTester;
+    private JacksonTester<MenuModelResponse> menuModelResponseJacksonTester;
 
     @LocalServerPort
     private int port;
@@ -54,26 +53,23 @@ public class MenuControllerApiTest {
         @DisplayName("When get menu plates then return page menu plates")
         public void whenGetMenuPlatesThenReturnPageMenuPlatesAndStatus200() throws IOException {
 
-            var pageMenuPlateResponse = getPageMenuPlateResponse();
-            var pageable = getPageable();
+            var plates = getPlates();
+            var expected = getMenuModelResponseGenerator();
 
-            when(orderManagerClient.getMenu(pageable)).thenReturn(pageMenuPlateResponse);
+            when(orderManagerClient.getPlates()).thenReturn(plates);
 
             var result = given()
                     .accept(JSON)
-                    .contentType(JSON)
-                    .queryParam("page", 0)
-                    .queryParam("size", 1)
                     .when()
                     .get()
                     .then()
                     .statusCode(OK.value())
                     .extract().asString();
 
-            var menuResult = pageMenuPlateResponseJacksonTester.parse(result).getObject();
+            var menuResult = menuModelResponseJacksonTester.parse(result).getObject();
 
             assertThat(menuResult)
-                    .isEqualTo(pageMenuPlateResponse);
+                    .isEqualTo(expected);
         }
 
     }

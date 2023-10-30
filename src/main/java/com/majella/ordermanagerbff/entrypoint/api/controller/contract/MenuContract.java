@@ -1,11 +1,9 @@
 package com.majella.ordermanagerbff.entrypoint.api.controller.contract;
 
-import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.MenuPlateResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.MenuModelResponse;
 
 public interface MenuContract {
 
-    Page<MenuPlateResponse> getMenu(Pageable pageable);
+    MenuModelResponse getMenu();
 
 }

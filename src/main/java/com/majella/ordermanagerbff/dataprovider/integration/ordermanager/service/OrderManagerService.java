@@ -2,12 +2,12 @@ package com.majella.ordermanagerbff.dataprovider.integration.ordermanager.servic
 
 import com.majella.ordermanagerbff.core.gateway.OrderManagerGateway;
 import com.majella.ordermanagerbff.dataprovider.integration.ordermanager.client.OrderManagerClient;
+import com.majella.ordermanagerbff.dataprovider.integration.ordermanager.exception.OrderManagerIntegrationException;
 import com.majella.ordermanagerbff.entrypoint.api.controller.payload.request.OrderRequest;
 import com.majella.ordermanagerbff.entrypoint.api.controller.payload.response.OrderResponse;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +17,20 @@ public class OrderManagerService implements OrderManagerGateway {
 
     @Override
     public OrderResponse create(OrderRequest orderRequest) {
-        return orderManagerClient.create(orderRequest);
+        try {
+            return orderManagerClient.create(orderRequest);
+        } catch(FeignException e) {
+            throw new OrderManagerIntegrationException(e);
+        }
     }
 
     @Override
     public void cancel(String id) {
-        orderManagerClient.cancel(id);
+        try {
+            orderManagerClient.cancel(id);
+        } catch(FeignException e) {
+            throw new OrderManagerIntegrationException(e);
+        }
     }
 
 }

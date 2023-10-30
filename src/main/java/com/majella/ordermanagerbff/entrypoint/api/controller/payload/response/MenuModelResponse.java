@@ -2,7 +2,8 @@ package com.majella.ordermanagerbff.entrypoint.api.controller.payload.response;
 
 import lombok.*;
 
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -10,10 +11,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class MenuPlateResponse {
+public class MenuModelResponse {
 
-    private String id;
-    private String name;
-    private BigDecimal price;
+    private Set<ToolbarItem> toolbarItems;
+    private List<Card> cards;
 
 }

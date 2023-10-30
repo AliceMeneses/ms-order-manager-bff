@@ -1,6 +1,7 @@
 package com.majella.ordermanagerbff.core.usecase;
 
 import com.majella.ordermanagerbff.core.gateway.MenuGateway;
+import com.majella.ordermanagerbff.helper.PlateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.majella.ordermanagerbff.helper.PageMenuPlateResponseGenerator.getPageMenuPlateResponse;
-import static com.majella.ordermanagerbff.helper.PageableGenerator.getPageable;
+import static com.majella.ordermanagerbff.helper.PlateGenerator.getPlates;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -31,15 +31,14 @@ public class MenuTest {
         @Test
         @DisplayName("When get menu plates then return page menu plates")
         public void whenGetMenuPlatesThenReturnPageMenuPlates() {
-            var pageable = getPageable();
 
-            var pageMenuPlateResponseExpected = getPageMenuPlateResponse();
+            var plates = getPlates();
 
-            when(menuGateway.getMenu(pageable)).thenReturn(pageMenuPlateResponseExpected);
+            when(menuGateway.getPlates()).thenReturn(plates);
 
-            var result = menu.getMenu(pageable);
+            var result = menu.getPlates();
 
-            assertThat(result).isEqualTo(pageMenuPlateResponseExpected);
+            assertThat(result).isEqualTo(plates);
         }
 
     }
